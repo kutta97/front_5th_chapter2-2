@@ -8,6 +8,18 @@ export const useCart = () => {
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
 
   const addToCart = (product: Product) => {
+    const cartItem = cart.find((item) => item.product.id === product.id);
+    if (cartItem) {
+      setCart((cart) =>
+        updateCartItemQuantity(
+          cart,
+          cartItem.product.id,
+          cartItem.quantity + 1,
+        ),
+      );
+      return;
+    }
+
     setCart((cart) => [...cart, { product, quantity: 1 }]);
   };
 
