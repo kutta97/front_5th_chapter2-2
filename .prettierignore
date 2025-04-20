@@ -1,0 +1,7 @@
+# Ignore everything
+*
+
+# But NOT src/refactoring and its contents
+!src/
+!src/refactoring/
+!src/refactoring/**
