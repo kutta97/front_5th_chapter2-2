@@ -5,3 +5,7 @@
 !src/
 !src/refactoring/
 !src/refactoring/**
+!src/basic/
+!src/basic/**
+!src/advanced/
+!src/advanced/**
