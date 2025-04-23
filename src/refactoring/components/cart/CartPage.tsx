@@ -6,18 +6,18 @@ import { CartItemList } from "./CartItemList.tsx";
 interface Props {
   products: Product[];
   coupons: Coupon[];
+  selectedCoupon: Coupon | null;
+  applyCoupon: (coupon: Coupon) => void;
 }
 
-export const CartPage = ({ products, coupons }: Props) => {
-  const {
-    cart,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    applyCoupon,
-    calculateTotal,
-    selectedCoupon,
-  } = useCart();
+export const CartPage = ({
+  products,
+  coupons,
+  selectedCoupon,
+  applyCoupon,
+}: Props) => {
+  const { cart, addToCart, removeFromCart, updateQuantity, calculateTotal } =
+    useCart(selectedCoupon);
 
   const getMaxDiscount = (discounts: { quantity: number; rate: number }[]) => {
     return discounts.reduce((max, discount) => Math.max(max, discount.rate), 0);

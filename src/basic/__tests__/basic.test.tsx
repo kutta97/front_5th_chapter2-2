@@ -86,7 +86,21 @@ const TestAdminPage = () => {
 describe("basic > ", () => {
   describe("시나리오 테스트 > ", () => {
     test("장바구니 페이지 테스트 > ", async () => {
-      render(<CartPage products={mockProducts} coupons={mockCoupons} />);
+      const TestCartPage = () => {
+        const { coupons, selectedCoupon, applyCoupon } =
+          useCoupons(mockCoupons);
+
+        return (
+          <CartPage
+            products={mockProducts}
+            coupons={coupons}
+            selectedCoupon={selectedCoupon}
+            applyCoupon={applyCoupon}
+          />
+        );
+      };
+
+      render(<TestCartPage />);
       const product1 = screen.getByTestId("product-p1");
       const product2 = screen.getByTestId("product-p2");
       const product3 = screen.getByTestId("product-p3");
@@ -457,7 +471,7 @@ describe("basic > ", () => {
     };
 
     test("장바구니에 제품을 추가해야 합니다", () => {
-      const { result } = renderHook(() => useCart());
+      const { result } = renderHook(() => useCart(null));
 
       act(() => {
         result.current.addToCart(testProduct);
@@ -471,7 +485,7 @@ describe("basic > ", () => {
     });
 
     test("장바구니에서 제품을 제거해야 합니다", () => {
-      const { result } = renderHook(() => useCart());
+      const { result } = renderHook(() => useCart(null));
 
       act(() => {
         result.current.addToCart(testProduct);
@@ -482,7 +496,7 @@ describe("basic > ", () => {
     });
 
     test("제품 수량을 업데이트해야 합니다", () => {
-      const { result } = renderHook(() => useCart());
+      const { result } = renderHook(() => useCart(null));
 
       act(() => {
         result.current.addToCart(testProduct);
@@ -492,23 +506,17 @@ describe("basic > ", () => {
       expect(result.current.cart[0].quantity).toBe(5);
     });
 
-    test("쿠폰을 적용해야지", () => {
-      const { result } = renderHook(() => useCart());
-
-      act(() => {
-        result.current.applyCoupon(testCoupon);
-      });
-
+    test("쿠폰 정보가 selectedCoupon에 저장되어야 합니다", () => {
+      const { result } = renderHook(() => useCart(testCoupon));
       expect(result.current.selectedCoupon).toEqual(testCoupon);
     });
 
     test("합계를 정확하게 계산해야 합니다", () => {
-      const { result } = renderHook(() => useCart());
+      const { result } = renderHook(() => useCart(testCoupon));
 
       act(() => {
         result.current.addToCart(testProduct);
         result.current.updateQuantity(testProduct.id, 2);
-        result.current.applyCoupon(testCoupon);
       });
 
       const total = result.current.calculateTotal();
