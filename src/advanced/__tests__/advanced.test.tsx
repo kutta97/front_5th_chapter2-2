@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { describe, expect, test } from "vitest";
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, renderHook, screen, within } from "@testing-library/react";
 import { CartPage } from "../../refactoring/components/cart/CartPage.tsx";
 import { AdminPage } from "../../refactoring/components/admin/AdminPage.tsx";
 import { Coupon, Product } from "../../types";
 import { useCoupons } from "../../refactoring/hooks";
+import { useForm } from "../../refactoring/hooks/useForm";
 
 const mockProducts: Product[] = [
   {
@@ -278,13 +279,132 @@ describe("advanced > ", () => {
     });
   });
 
-  describe("자유롭게 작성해보세요.", () => {
-    test("새로운 유틸 함수를 만든 후에 테스트 코드를 작성해서 실행해보세요", () => {
-      expect(true).toBe(true);
+  describe("useForm", () => {
+    test("초기값으로 올바르게 초기화되어야 한다", () => {
+      const initialProduct: Product = {
+        id: "test1",
+        name: "테스트 상품",
+        price: 15000,
+        stock: 10,
+        discounts: []
+      };
+      
+      const { result } = renderHook(() => useForm(initialProduct));
+      expect(result.current.values).toEqual(initialProduct);
     });
+    
+    test("handleChange 함수로 개별 필드의 값을 수정할 수 있어야 한다", () => {
+      const initialProduct: Product = {
+        id: "test1",
+        name: "테스트 상품",
+        price: 15000,
+        stock: 10,
+        discounts: []
+      };
+      
+      const { result } = renderHook(() => useForm(initialProduct));
 
-    test("새로운 hook 함수르 만든 후에 테스트 코드를 작성해서 실행해보세요", () => {
-      expect(true).toBe(true);
+      act(() => {
+        result.current.handleChange("name")("수정된 상품명");
+      });
+      
+      expect(result.current.values.name).toBe("수정된 상품명");
+      expect(result.current.values.price).toBe(15000);
+
+      act(() => {
+        result.current.handleChange("price")(20000);
+        result.current.handleChange("stock")(5);
+      });
+      
+      expect(result.current.values.price).toBe(20000);
+      expect(result.current.values.stock).toBe(5);
+      expect(result.current.values.name).toBe("수정된 상품명");
+    });
+    
+    test("reset 함수로 값을 초기값으로 되돌릴 수 있어야 한다", () => {
+      const initialProduct: Product = {
+        id: "test1",
+        name: "테스트 상품",
+        price: 15000,
+        stock: 10,
+        discounts: []
+      };
+      
+      const { result } = renderHook(() => useForm(initialProduct));
+
+      act(() => {
+        result.current.handleChange("name")("수정된 상품명");
+        result.current.handleChange("price")(20000);
+      });
+
+      act(() => {
+        result.current.reset();
+      });
+      
+      expect(result.current.values).toEqual(initialProduct);
+    });
+    
+    test("reset 함수에 새 값을 전달하면 해당 값으로 초기화할 수 있어야 한다", () => {
+      const initialProduct: Product = {
+        id: "test1",
+        name: "테스트 상품",
+        price: 15000,
+        stock: 10,
+        discounts: []
+      };
+      
+      const newProduct: Product = {
+        id: "test1",
+        name: "새 상품명",
+        price: 25000,
+        stock: 20,
+        discounts: [{ quantity: 5, rate: 0.1 }]
+      };
+      
+      const { result } = renderHook(() => useForm(initialProduct));
+
+      act(() => {
+        result.current.reset(newProduct);
+      });
+      
+      expect(result.current.values).toEqual(newProduct);
+      expect(result.current.values.name).toBe("새 상품명");
+      expect(result.current.values.price).toBe(25000);
+      expect(result.current.values.discounts).toHaveLength(1);
+    });
+    
+    test("setFormValues 함수로 모든 필드의 값을 일괄 변경할 수 있어야 한다", () => {
+      const initialProduct: Product = {
+        id: "test1",
+        name: "테스트 상품",
+        price: 15000,
+        stock: 10,
+        discounts: []
+      };
+      
+      const { result } = renderHook(() => useForm(initialProduct));
+
+      act(() => {
+        result.current.setFormValues({
+          id: "test1",
+          name: "업데이트된 상품",
+          price: 30000,
+          stock: 15,
+          discounts: [
+            { quantity: 3, rate: 0.05 },
+            { quantity: 10, rate: 0.15 }
+          ]
+        });
+      });
+      
+      expect(result.current.values.name).toBe("업데이트된 상품");
+      expect(result.current.values.price).toBe(30000);
+      expect(result.current.values.stock).toBe(15);
+      expect(result.current.values.discounts).toHaveLength(2);
+      expect(result.current.values.discounts[0].quantity).toBe(3);
+      expect(result.current.values.discounts[0].rate).toBe(0.05);
+      expect(result.current.values.discounts[1].quantity).toBe(10);
+      expect(result.current.values.discounts[1].rate).toBe(0.15);
     });
   });
 });
