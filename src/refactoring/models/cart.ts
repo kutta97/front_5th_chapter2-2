@@ -1,6 +1,9 @@
 import { CartItem, Coupon } from "../../types";
 
-const removeCartItem = (cart: CartItem[], productId: string) =>
+export const findCartItem = (cart: CartItem[], productId: string) =>
+  cart.find((item) => item.product.id === productId);
+
+export const removeCartItem = (cart: CartItem[], productId: string) =>
   cart.filter((item) => item.product.id !== productId);
 
 const updateCartItem = (

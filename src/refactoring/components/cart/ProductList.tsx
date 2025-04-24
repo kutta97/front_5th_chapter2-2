@@ -1,24 +1,29 @@
-import { Discount, Product } from "../../../types.ts";
+import { CartItem, Product } from "../../../types.ts";
 
 interface Props {
   products: Product[];
   addToCart: (product: Product) => void;
-  getRemainingStock: (product: Product) => number;
-  getMaxDiscount: (discounts: Discount[]) => number;
+  getCartItem: (id: string) => CartItem | undefined;
 }
 
-export const ProductList = ({
-  products,
-  addToCart,
-  getRemainingStock,
-  getMaxDiscount,
-}: Props) => {
+export const ProductList = ({ products, addToCart, getCartItem }: Props) => {
+  const getMaxDiscount = (discounts: { quantity: number; rate: number }[]) => {
+    return discounts.reduce((max, discount) => Math.max(max, discount.rate), 0);
+  };
+
+  const getRemainingStock = (product: Product) => {
+    const cartItemQuantity = getCartItem(product.id)?.quantity ?? 0;
+
+    return product.stock - cartItemQuantity;
+  };
+
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4">상품 목록</h2>
       <div className="space-y-2">
         {products.map((product) => {
           const remainingStock = getRemainingStock(product);
+
           return (
             <div
               key={product.id}

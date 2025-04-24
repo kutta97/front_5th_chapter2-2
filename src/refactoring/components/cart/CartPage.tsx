@@ -1,4 +1,4 @@
-import { CartItem, Coupon, Product } from "../../../types.ts";
+import { Coupon, Product } from "../../../types.ts";
 import { useCart } from "../../hooks";
 import { ProductList } from "./ProductList.tsx";
 import { CartItemList } from "./CartItemList.tsx";
@@ -16,29 +16,14 @@ export const CartPage = ({
   selectedCoupon,
   applyCoupon,
 }: Props) => {
-  const { cart, addToCart, removeFromCart, updateQuantity, calculateTotal } =
-    useCart(selectedCoupon);
-
-  const getMaxDiscount = (discounts: { quantity: number; rate: number }[]) => {
-    return discounts.reduce((max, discount) => Math.max(max, discount.rate), 0);
-  };
-
-  const getRemainingStock = (product: Product) => {
-    const cartItem = cart.find((item) => item.product.id === product.id);
-    return product.stock - (cartItem?.quantity || 0);
-  };
-
-  const getAppliedDiscount = (item: CartItem) => {
-    const { discounts } = item.product;
-    const { quantity } = item;
-    let appliedDiscount = 0;
-    for (const discount of discounts) {
-      if (quantity >= discount.quantity) {
-        appliedDiscount = Math.max(appliedDiscount, discount.rate);
-      }
-    }
-    return appliedDiscount;
-  };
+  const {
+    cart,
+    addToCart,
+    getCartItem,
+    removeFromCart,
+    updateQuantity,
+    calculateTotal,
+  } = useCart(selectedCoupon);
 
   return (
     <div className="container mx-auto p-4">
@@ -47,14 +32,12 @@ export const CartPage = ({
         <ProductList
           products={products}
           addToCart={addToCart}
-          getRemainingStock={getRemainingStock}
-          getMaxDiscount={getMaxDiscount}
+          getCartItem={getCartItem}
         />
         <CartItemList
           cart={cart}
           updateQuantity={updateQuantity}
           removeFromCart={removeFromCart}
-          getAppliedDiscount={getAppliedDiscount}
           coupons={coupons}
           selectedCoupon={selectedCoupon}
           applyCoupon={applyCoupon}

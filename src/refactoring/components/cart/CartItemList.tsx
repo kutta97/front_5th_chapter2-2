@@ -1,10 +1,10 @@
 import { CartItem, Coupon } from "../../../types.ts";
+import { getMaxApplicableDiscount } from "../../models/cart.ts";
 
 interface Props {
   cart: CartItem[];
   updateQuantity: (productId: string, newQuantity: number) => void;
   removeFromCart: (productId: string) => void;
-  getAppliedDiscount: (item: CartItem) => number;
   coupons: Coupon[];
   selectedCoupon: Coupon | null;
   applyCoupon: (coupon: Coupon) => void;
@@ -19,7 +19,6 @@ export const CartItemList = ({
   cart,
   updateQuantity,
   removeFromCart,
-  getAppliedDiscount,
   coupons,
   selectedCoupon,
   applyCoupon,
@@ -34,7 +33,7 @@ export const CartItemList = ({
 
       <div className="space-y-2">
         {cart.map((item) => {
-          const appliedDiscount = getAppliedDiscount(item);
+          const appliedDiscount = getMaxApplicableDiscount(item);
           return (
             <div
               key={item.product.id}
