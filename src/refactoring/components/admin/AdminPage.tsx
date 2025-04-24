@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Coupon, Discount, Product } from "../../../types.ts";
+import { Button } from "../ui/Button";
 
 interface Props {
   products: Product[];
@@ -139,12 +140,13 @@ export const AdminPage = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <h2 className="text-2xl font-semibold mb-4">상품 관리</h2>
-          <button
+          <Button
             onClick={() => setShowNewProductForm(!showNewProductForm)}
-            className="bg-green-500 text-white px-4 py-2 rounded mb-4 hover:bg-green-600"
+            variant="success"
+            className="mb-4"
           >
             {showNewProductForm ? "취소" : "새 상품 추가"}
-          </button>
+          </Button>
           {showNewProductForm && (
             <div className="bg-white p-4 rounded shadow mb-4">
               <h3 className="text-xl font-semibold mb-2">새 상품 추가</h3>
@@ -205,12 +207,13 @@ export const AdminPage = ({
                   className="w-full p-2 border rounded"
                 />
               </div>
-              <button
+              <Button
                 onClick={handleAddNewProduct}
-                className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                variant="primary"
+                fullWidth
               >
                 추가
-              </button>
+              </Button>
             </div>
           )}
           <div className="space-y-2">
@@ -330,12 +333,14 @@ export const AdminPage = ({
                             </button>
                           </div>
                         </div>
-                        <button
+                        <Button
                           onClick={handleEditComplete}
-                          className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 mt-2"
+                          variant="success"
+                          size="sm"
+                          className="mt-2"
                         >
                           수정 완료
-                        </button>
+                        </Button>
                       </div>
                     ) : (
                       <div>
@@ -347,13 +352,15 @@ export const AdminPage = ({
                             </span>
                           </div>
                         ))}
-                        <button
+                        <Button
                           data-testid="modify-button"
                           onClick={() => handleEditProduct(product)}
-                          className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 mt-2"
+                          variant="primary"
+                          size="sm"
+                          className="mt-2"
                         >
                           수정
-                        </button>
+                        </Button>
                       </div>
                     )}
                   </div>
@@ -411,12 +418,13 @@ export const AdminPage = ({
                   className="w-full p-2 border rounded"
                 />
               </div>
-              <button
+              <Button
                 onClick={handleAddCoupon}
-                className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
+                variant="success"
+                fullWidth
               >
                 쿠폰 추가
-              </button>
+              </Button>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-2">현재 쿠폰 목록</h3>

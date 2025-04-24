@@ -1,7 +1,7 @@
 import { Coupon, Product } from "../../../types.ts";
 import { useCart } from "../../hooks";
-import { ProductList } from "./ProductList.tsx";
-import { CartItemList } from "./CartItemList.tsx";
+import { ProductList } from "./product-list/ProductList.tsx";
+import { CartOverview } from "./cart-item-list/CartOverview.tsx";
 
 interface Props {
   products: Product[];
@@ -34,7 +34,7 @@ export const CartPage = ({
           addToCart={addToCart}
           getCartItem={getCartItem}
         />
-        <CartItemList
+        <CartOverview
           cart={cart}
           updateQuantity={updateQuantity}
           removeFromCart={removeFromCart}
